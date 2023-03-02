@@ -12,7 +12,7 @@ import tensorflow_hub as hub
 IMAGE_DIM = 224   # required/default image dimensionality
 
 
-def load_images(image_paths, image_size, verbose=True):
+def load_images(image_paths, image_size, verbose=False):
     '''
     Function for loading images into numpy arrays for passing to model.predict
     inputs:
@@ -71,11 +71,7 @@ def classify(model, input_paths, image_dim=IMAGE_DIM):
 def classify_nd(model, nd_images):
     """ Classify given a model, image array (numpy)...."""
 
-    print("IMages: ", nd_images)
-    print("HERE <----------------")
     model_preds = model.predict(nd_images)
-    # preds = np.argsort(model_preds, axis = 1).tolist()
-    print("HERE ---------------->")
     categories = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
 
     probs = []

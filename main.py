@@ -1,10 +1,9 @@
 import os, uuid, shutil
 
 import uvicorn
-from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.auth import get_current_username
 from config import PORT, MAX_IMAGE_SIZE, ALLOWED_CONTENT_TYPES
 from nsfw_detector import predict
 
@@ -21,8 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add this to controller parameters for basic authentication
-# _: str = Depends(get_current_username)
 
 @app.post("/api/nsfw-check")
 async def nsfw_check(input_file: UploadFile = File()):
@@ -31,8 +28,7 @@ async def nsfw_check(input_file: UploadFile = File()):
     if image_size_bytes > max_size:
         raise HTTPException(status_code=413, detail="Payload too large")
 
-    content_type = input_file.content_type
-    if content_type not in ALLOWED_CONTENT_TYPES:
+    if input_file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(status_code=400, detail="Invalid document type")
 
     file_name = os.path.join("images", str(uuid.uuid4()) + input_file.filename)
