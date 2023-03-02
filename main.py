@@ -21,9 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add this to controller parameters for basic authentication
+# _: str = Depends(get_current_username)
 
 @app.post("/api/nsfw-check")
-async def nsfw_check(input_file: UploadFile = File(), _: str = Depends(get_current_username)):
+async def nsfw_check(input_file: UploadFile = File()):
     max_size = MAX_IMAGE_SIZE * 1024 * 1024
     image_size_bytes = input_file.size
     if image_size_bytes > max_size:
