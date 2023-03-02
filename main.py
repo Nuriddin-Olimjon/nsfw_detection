@@ -2,6 +2,7 @@ import os, uuid, shutil
 
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth import get_current_username
 from config import PORT, MAX_IMAGE_SIZE, ALLOWED_CONTENT_TYPES
@@ -11,6 +12,14 @@ from nsfw_detector import predict
 MODEL = predict.load_model('nsfw_detector/nsfw_model.h5')
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/api/nsfw-check")
