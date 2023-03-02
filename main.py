@@ -1,5 +1,4 @@
 import os, uuid, shutil
-from decimal import Decimal
 
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
