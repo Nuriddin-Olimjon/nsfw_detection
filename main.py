@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 
-@app.post("/api/nsfw-check")
+@app.post("/api/internal/nsfw-check")
 async def nsfw_check(input_file: UploadFile = File()):
     max_size = MAX_IMAGE_SIZE * 1024 * 1024
     image_size_bytes = input_file.size
@@ -38,10 +38,15 @@ async def nsfw_check(input_file: UploadFile = File()):
     result = predict.classify(MODEL, file_name)
     os.remove(file_name)
 
+    is_safe = False
+    if result["data"]["neutral"] > 87:
+        is_safe = True
+
     return {
-        "result": result["data"]
+        "results": result["data"],
+        "is_safe": is_safe
     }
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=PORT, log_level="debug")
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT, log_level="info")
